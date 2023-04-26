@@ -1,5 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>  
+<odoo>
+
+    <record id="view_helpdesk_ticket_form" model="ir.ui.view">
+        <field name="name">view.helpdesk_ticket.form</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="new,assigned,in_process,pending,resolved"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="date_limit"/>
+                        </group>
+                        <group>
+                            <field name="user_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_tree" model="ir.ui.view">
+        <field name="name">view.helpdesk_ticket.tree</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="arch" type="xml">
+            <tree string="Tickets">
+                <!-- Para poder mover las tarjetas-->
+                <field name="sequence" widget="handle"/>
+                <!-- Los campos del interior de la tarjeta-->
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="date" optional="show"/>
+                <field name="date_limit" optional="hide"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
 
     <record id="helpdesk_ticket_action" model="ir.actions.act_window">
         <field name="name">helpdesk tikets</field>
@@ -13,7 +58,7 @@
         </field>
     </record>
 
-<menuitem id="helpdesk_menu" name="Helpdesk" sequence="10"/>
-<menuitem id="helpdesk_ticket_open" name="Tickets" sequence="10" parent="helpdesk_menu" action="helpdesk_ticket_action"/>
+    <menuitem id="helpdesk_menu" name="Helpdesk" sequence="10"/>
+    <menuitem id="helpdesk_ticket_open" name="Tickets" sequence="10" parent="helpdesk_menu" action="helpdesk_ticket_action"/>
 
 </odoo> 
