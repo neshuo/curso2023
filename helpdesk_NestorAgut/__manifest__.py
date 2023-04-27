@@ -15,6 +15,7 @@
     "data": [
         "security/helpdesk_security.xml",
         "views/helpdesk_Nestor.xml",
-        "security/ir.model.access.csv"
+        "security/ir.model.access.csv",
+        "views/helpdesk_ticket_tag.xml"
     ],
 }
