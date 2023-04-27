@@ -13,8 +13,8 @@ class Helpdesktickets(models.Model):
 
     #Nombre
     name= fields.Char(
-        String='nombre',
-        requiered=True,
+        string='nombre',
+        required=True,
         help='nombre de la tarea'
     )
 
@@ -29,7 +29,7 @@ class Helpdesktickets(models.Model):
 
     #Fecha y hora limite
     date_limit= fields.Datetime(
-        String='Limit Date & Time'
+        string='Limit Date & Time'
     )
 
     #Asignado
@@ -38,7 +38,7 @@ class Helpdesktickets(models.Model):
     )
     user_id = fields.Many2one(
         comodel_name='res.users',
-        String='assigned'
+        string='assigned'
     )
 
     #Acciones a realizar
@@ -55,3 +55,18 @@ class Helpdesktickets(models.Model):
         ],
         default = 'new'
     )
+
+    tag_ids = fields.Many2many(
+        comodel_name='helpdesk.ticket.tag',
+        string='Tags'
+    )
+    
+    action_ids = fields.One2many(
+        comodel_name='helpdesk.ticket.action',
+        inverse_name='ticket_id',
+        string='Actions'
+    )
+
+    def set_actions_as_done(self):
+        self.ensure_one()
+        self.action_ids.set_done()
