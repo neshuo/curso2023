@@ -21,8 +21,14 @@
                             <field name="date_limit"/>
                         </group>
                         <group>
+                            <field name="assigned"/>
                             <field name="user_id"/>
                             <field name="tag_ids" widget="many2many_tags"/>
+
+                            <button string="limpiar"
+                            name="clear_tags"
+                            type="object"/>
+
                         </group>
                     </group>
 
@@ -79,7 +85,7 @@
         <field name="name">helpdesk tikets</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">helpdesk.ticket</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">kanban,pivot,tree,graph,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create a new ticket
@@ -89,5 +95,76 @@
 
     <menuitem id="helpdesk_menu" name="Helpdesk" sequence="10"/>
     <menuitem id="helpdesk_ticket_open" name="Tickets" sequence="10" parent="helpdesk_menu" action="helpdesk_ticket_action"/>
+
+    <!--vista de tipo serch-->
+    <record id="helpdesk_ticket_search" model="ir.ui.view">
+        <field name="name">view.helpdesk_ticket.search</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="arch" type="xml">
+            <search string="Tickets">
+                <field name="name"/>
+                <field name="user_id"/>
+                <filter string="Assigned" name="filter_to_assigned" domain="[('assigned','=',True)]"/>
+                <filter string="No date" name="filter_no_date" domain="[('date','=',False)]"/>
+                <filter string="Date" name="date" context="{'group_by':'date'}"/>
+                <filter string="User" name="user" context="{'group_by':'user_id'}"/>
+            </search>
+        </field>
+    </record>
+
+
+    <!--vista de tipo kanban-->
+    <record id="helpdesk_ticket_kanban" model="ir.ui.view">
+        <field name="name">view.helpdesk_ticket.kanban</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="arch" type="xml">
+            <kanban>
+		        <field name="name"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="#{!selection_mode ? kanban_color(record.color.raw_value) : ''} #{lost_ribbon ? 'oe_kanban_card_ribbon' : ''} oe_kanban_global_click oe_kanban_card d-flex flex-column">
+                            <div class="o_dropdown_kanban dropdown">
+                                <a class="dropdown-toggle o-no-caret btn" role="button" data-bs-toggle="dropdown" data-bs-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+                                    <span class="fa fa-ellipsis-v"/>
+                                </a>
+                                <div class="dropdown-menu" role="menu">
+                                    <t t-if="widget.editable"><a role="menuitem" type="edit" class="dropdown-item">Edit</a></t>
+                                    <t t-if="widget.deletable"><a role="menuitem" type="delete" class="dropdown-item">Delete</a></t>
+                                    <ul class="oe_kanban_colorpicker" data-field="color"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+
+    <!--vista de tipo Pivot-->
+    <record id="view_helpdesk_ticket_pivot" model="ir.ui.view">
+        <field name="name">view.helpdesk_ticket.pivot</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="arch" type="xml">
+            <pivot string="Tickets">
+                <field name="user_id" type="row"/>
+                <field name="date" interval="month" type="col"/>
+                <field name="color" invisible="1"/>
+                <field name="sequence" invisible="1"/>
+            </pivot>
+        </field>
+    </record>
+
+
+    <!--vista de tipo Graph-->
+    <record id="view_helpdesk_ticket_graph" model="ir.ui.view">
+        <field name="name">view.helpdesk_ticket.graph</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="arch" type="xml">
+            <graph string="Tickets" type="pie" >
+                <field name="user_id"/>
+            </graph>
+        </field>
+    </record>
 
 </odoo> 

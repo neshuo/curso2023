@@ -1,7 +1,7 @@
 # Copyright <YEAR(S)> <AUTHOR(S)>
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 {
-    "name": "helpdesk Nestor Agut",
+    "name": "helpdesk_NestorAgut",
     "summary": "Gestion incidencias de nestor",
     "version": "16.0.1.0.0",
     "category": "Helpdesk",
