@@ -1,4 +1,4 @@
-from odoo import fields,models
+from odoo import api,fields,models
 
 class Helpdesktickets(models.Model):
     _name= 'helpdesk.ticket'
@@ -70,3 +70,54 @@ class Helpdesktickets(models.Model):
     def set_actions_as_done(self):
         self.ensure_one()
         self.action_ids.set_done()
+
+    color = fields.Integer('Color Index', default=0)
+
+    amount_time = fields.Float(
+        string='Amount of time'
+    )
+
+
+    #CLASE 2.2
+
+    assigned = fields.Boolean(
+        compute= '_compute_assigned',
+        search= '_search_assigned',
+        inverse='_inverse_assigned',
+    )
+
+    @api.depends('user_id')
+    def _compute_asigned(self):
+        for record in self:
+            record.assigned = bool(record.user_id)
+
+    def _search_assigned(self, operator, value):
+        if operator == '=' and value == True:
+            operator = '!='
+        else:
+            operator = '='
+        return[('user_id',operator,False)]
+    
+    def _inverse_assigned(self):
+        for record in self:
+            if not record.assigned:
+                record.user_id = False
+            else:
+                record.user_id = self.env.user
+
+    
+    tag_name = fields.Char()
+
+    def create_tag(self):
+
+        #self.ensure_one()
+        #self.write({'tag_ids': Command.create({'name' : self.tag_name})})
+        for record in self:
+            record.write({
+                    'tag_ids' : Command.create({'name': self.tag_name})
+                }
+            )
+
+    def clear_tags(self):
+        self.ensure_one()
+        self.tag_ids=Command.Clear()
