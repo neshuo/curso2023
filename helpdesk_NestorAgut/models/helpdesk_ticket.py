@@ -1,4 +1,7 @@
 from odoo import api,fields,models
+from odoo.exceptions import UserError
+
+from datetime import timedelta
 
 class Helpdesktickets(models.Model):
     _name= 'helpdesk.ticket'
@@ -21,10 +24,16 @@ class Helpdesktickets(models.Model):
     #Descripción
     description= fields.Text()
 
+    @api.model
+    def get_default_date(self):
+        return fields.Date.today()
+    
+
     #Fecha
     date= fields.Date(
-        string='descripcion',
-        help='añade una descripción para poder solucionar la incidencia'
+        #string='descripcion',
+        #help='añade una descripción para poder solucionar la incidencia'
+        default=get_default_date,
     )
 
     #Fecha y hora limite
@@ -32,10 +41,28 @@ class Helpdesktickets(models.Model):
         string='Limit Date & Time'
     )
 
+    @api.onchange('date')
+    def _onchange_date(sef):    
+        if self.date:
+            self.date_limit = self.date + timedelta(days=1)
+        else:
+            pass
+
+
     #Asignado
     assigned= fields.Boolean(
         readonly=True
     )
+
+    tag_ids = fields.Many2many(
+        relation='helpdesk_ticket_tag_rel',
+        column1='ticket_id',
+        column2='tag_id',
+        string='Tags'
+    )
+
+
+
     user_id = fields.Many2one(
         comodel_name='res.users',
         string='assigned'
@@ -77,6 +104,13 @@ class Helpdesktickets(models.Model):
         string='Amount of time'
     )
 
+    #Clase 3.1
+    #amount time debe ser mayor que 0
+    @api.constrains('amount_time')
+    def check_amount_time(self):
+        for record in self:
+            if record.amount_time < 0:
+                raise UserError(_("Time cant be nagativve"))
 
     #CLASE 2.2
 
@@ -109,9 +143,6 @@ class Helpdesktickets(models.Model):
     tag_name = fields.Char()
 
     def create_tag(self):
-
-        #self.ensure_one()
-        #self.write({'tag_ids': Command.create({'name' : self.tag_name})})
         for record in self:
             record.write({
                     'tag_ids' : Command.create({'name': self.tag_name})
@@ -121,3 +152,8 @@ class Helpdesktickets(models.Model):
     def clear_tags(self):
         self.ensure_one()
         self.tag_ids=Command.Clear()
+
+    def get_assigned(self):
+        self.ensure_one()
+        self.state = 'assigned'
+        self.user_id = self.env.user

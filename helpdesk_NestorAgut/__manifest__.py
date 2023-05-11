@@ -16,6 +16,9 @@
         "security/helpdesk_security.xml",
         "views/helpdesk_Nestor.xml",
         "security/ir.model.access.csv",
-        "views/helpdesk_ticket_tag.xml"
+        "views/helpdesk_ticket_tag.xml",
+        "views/helpdesk_ticket_action_views.xml",
+        "wizards/helpdesk_create_ticket_views.xml",
+        "data/helpdesk_cron.xml",
     ],
 }

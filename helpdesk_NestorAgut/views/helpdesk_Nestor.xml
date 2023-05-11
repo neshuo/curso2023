@@ -7,6 +7,7 @@
         <field name="arch" type="xml">
             <form>
                 <header>
+                    <button string="Assign to me" name="get_assigned" type="object" states='new' groups='helpdesk_NestorAgut.res_groups_helpdesk_manager'/>
                     <field name="state" widget="statusbar" statusbar_visible="new,assigned,in_process,pending,resolved"/>
                 </header>
                 <sheet>
@@ -42,6 +43,7 @@
                         </page>
                         <page string="Actions" name="actions">
 
+                            <button string="Open related actions (type=action)" name="%(helpdesk_NestorAgut.helpdesk_ticket_action_related_action)d" type="action"/>
                             <button string="Set all as done" name="set_actions_as_done" type="object"/>
                             <field name="action_ids">
                                 <tree string="Actions">
